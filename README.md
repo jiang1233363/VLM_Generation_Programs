@@ -1,48 +1,28 @@
 # VLM 数据集完整生成程序
 
 
-## 📁 目标数据集
+### 🏗️ visual_boundary_dataset 生成器
+- `batch_download_images.py` - 批量图像下载器
+- `collect_and_analyze_images.py` - 图像收集分析器
+- `finalize_image_collection.py` - 图像收集最终化工具
 
-### 1. VLM_Final_Benchmark_Dataset
-- **位置**: `/home/jgy/VLM_Final_Benchmark_Dataset/`
-- **内容**: 912个样本，4大类别
+### 🛠️ 高级工具
+- `fast_noise_generator.py` - 快速噪声生成器
+- `noise_gradient_generator.py` - 噪声梯度生成器
+- `merge_datasets.py` - 数据集合并工具
+- `cleanup_datasets.py` - 数据集清理工具
+- `detailed_dataset_analysis.py` - 详细数据集分析器
+- `fix_incomplete_illusions.py` - 错觉数据修复工具
+- `recreate_illusion_dataset.py` - 错觉数据集重建工具
+- `evaluation_framework.py` - 评估框架
 
-### 2. Ultra_Quality_Relation_Dataset
-- **位置**: `/home/jgy/Ultra_Quality_Relation_Dataset/`
-- **内容**: 200个关系，20,000张梯度图片
+## 🔧 VLM_Comprehensive_Benchmark 生成流程
 
-## 🔧 完整生成程序
+### 主生成器: organize_vlm_benchmark.py 🎯
+**作用**: 主整合器，生成 VLM_Comprehensive_Benchmark
+**功能**: 整合所有源数据集为四大类别综合基准
+**输出**: 44,472+ 图片 + 72 视频的大规模数据集
 
-#### create_final_dataset.py
-**作用**: 最终整合器，生成 VLM_Final_Benchmark_Dataset
-**功能**: 整合以下源数据集为4大类别 (Subject/Relation/Attribute/Illusion)
-
-#### 源数据集生成器：
-
-**1. complete_50_illusions_final.py**
-- **生成**: Unified_Illusion_Dataset → VLM_Final_Benchmark_Dataset/Illusion
-- **功能**: 50种光学错觉，每种100个变化
-- **类型**: Müller-Lyer, Hermann Grid, Penrose Triangle等
-
-**2. complete_noise_dataset.py**  
-- **生成**: Real_World_Noise_Dataset → VLM_Final_Benchmark_Dataset/Subject
-- **功能**: 基于visual_boundary_dataset的噪声处理
-- **效果**: 10种噪声/退化类型
-
-**3. standard_relation_generator.py**
-- **生成**: Standard_Quality_Relation_Dataset → VLM_Final_Benchmark_Dataset/Relation  
-- **功能**: 4种关系类型，每类25个关系
-- **输出**: 100个关系，5,000张图片
-
-**4. enhanced_image_downloader.py**
-- **生成**: visual_boundary_dataset → VLM_Final_Benchmark_Dataset/Subject+Attribute
-- **功能**: 下载和处理真实世界图片
-- **来源**: 多个图片数据库
-
-**5. visual_degradation.py**
-- **生成**: 图片退化效果 → VLM_Final_Benchmark_Dataset/Attribute
-- **功能**: 亮度、对比度、清晰度等属性变化
-- **效果**: 多种视觉属性退化
 
 ### Ultra_Quality_Relation_Dataset 生成
 
@@ -54,45 +34,41 @@
 - 每个关系100个梯度变化
 - 6种视觉效果变化
 
-## 📊 数据生成依赖关系
+### VLM_Comprehensive_Benchmark 生成
+
+#### organize_vlm_benchmark.py
+**作用**: 生成综合性基准数据集
+**功能**:
+- 整合所有可用VLM数据集
+- 按4大类别重新组织：Subject、Relation、Attribute、Illusion
+- 创建符号链接避免数据重复
+- 生成详细统计分析报告
+
+**数据源**:
+- Real_World_Noise_Dataset (4,327张)
+- visual_boundary_dataset (5,808张)
+- Unified_Illusion_Dataset (5,010张)
+- 各种关系数据集
+
+#### VLM_Comprehensive_Benchmark_scripts/
+**包含内部程序**:
+- **colorblindness_scripts/**: 色盲识别专用脚本集合
+  - `download_ishihara_plates.py` - 下载Ishihara色盲测试图
+  - `colorblind_simulation.py` - 色盲视觉模拟
+  - `generate_dataset.py` - 色盲测试数据集生成
+  - `comprehensive_download.py` - 综合下载器
+- **evaluation_framework.py** - 评估框架
+- **run_generation.py** - 批量生成脚本
+- **process_existing_images.py** - 现有图片处理
 
 
-## 🔄 完整重新生成指南
 
-### 重新生成 VLM_Final_Benchmark_Dataset：
 
-```bash
-# 1. 生成基础图片数据
-python enhanced_image_downloader.py    # 下载visual_boundary_dataset
-python visual_degradation.py           # 生成退化效果
-
-# 2. 生成各类别源数据
-python complete_noise_dataset.py       # Subject类别数据
-python complete_50_illusions_final.py  # Illusion类别数据  
-python standard_relation_generator.py  # Relation类别数据
-
-# 3. 最终整合
-python create_final_dataset.py        # 整合为VLM_Final_Benchmark_Dataset
-```
-
-### 重新生成 Ultra_Quality_Relation_Dataset：
-
-```bash
-python ultra_relation_generator.py
-```
-
-## 📋 各类别对应关系
-
-| VLM最终数据集类别 | 源数据集 | 生成程序 |
-|-------------------|----------|----------|
-| Subject (主体感知) | Real_World_Noise_Dataset + visual_boundary_dataset | complete_noise_dataset.py + enhanced_image_downloader.py |
-| Relation (关系理解) | Standard_Quality_Relation_Dataset | standard_relation_generator.py |
-| Attribute (属性感知) | visual_boundary_dataset + 退化效果 | visual_degradation.py + enhanced_image_downloader.py |
-| Illusion (错觉感知) | Unified_Illusion_Dataset | complete_50_illusions_final.py |
 
 ## 📦 依赖安装
 
 ```bash
 pip install svgwrite cairosvg pillow matplotlib numpy opencv-python requests beautifulsoup4 tqdm
 ```
+
 
